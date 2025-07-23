@@ -1158,7 +1158,7 @@ Each library is listed with its description to help you understand its functiona
         self.app = workflow.compile()
         self.checkpointer = MemorySaver()
         self.app.checkpointer = self.checkpointer
-        # display(Image(self.app.get_graph().draw_mermaid_png()))
+        # display(Image(seslf.app.get_graph().draw_mermaid_png()))
 
     def go(self, prompt):
         """Execute the agent with the given prompt.
