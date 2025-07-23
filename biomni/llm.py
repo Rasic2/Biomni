@@ -1,10 +1,6 @@
-import os
-from typing import Literal, Optional
+from typing import Literal
 
-import openai
 from langchain_anthropic import ChatAnthropic
-
-# from langchain_aws import ChatBedrock
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import ChatOllama
@@ -14,12 +10,12 @@ SourceType = Literal["OpenAI", "AzureOpenAI", "Anthropic", "Ollama", "Gemini", "
 
 
 def get_llm(
-    model: str = "claude-3-5-sonnet-20241022",
-    temperature: float = 0.7,
-    stop_sequences: list[str] | None = None,
-    source: SourceType | None = None,
-    base_url: str | None = None,
-    api_key: str = "EMPTY",
+        model: str = "claude-3-5-sonnet-20241022",
+        temperature: float = 0.7,
+        stop_sequences: list[str] | None = None,
+        source: SourceType | None = None,
+        base_url: str | None = None,
+        api_key: str = "EMPTY",
 ) -> BaseChatModel:
     """
     Get a language model instance based on the specified model name and source.
@@ -44,11 +40,12 @@ def get_llm(
         elif base_url is not None:
             source = "Custom"
         elif "/" in model or any(
-            name in model.lower() for name in ["llama", "mistral", "qwen", "gemma", "phi", "dolphin", "orca", "vicuna"]
+                name in model.lower() for name in
+                ["llama", "mistral", "qwen", "gemma", "phi", "dolphin", "orca", "vicuna"]
         ):
             source = "Ollama"
         elif model.startswith(
-            ("anthropic.claude-", "amazon.titan-", "meta.llama-", "mistral.", "cohere.", "ai21.", "us.")
+                ("anthropic.claude-", "amazon.titan-", "meta.llama-", "mistral.", "cohere.", "ai21.", "us.")
         ):
             source = "Bedrock"
         else:
@@ -60,10 +57,8 @@ def get_llm(
     elif source == "AzureOpenAI":
         API_VERSION = "2024-12-01-preview"
         return AzureChatOpenAI(
-            openai_api_key=os.getenv("OPENAI_API_KEY"),
-            azure_endpoint=os.getenv("OPENAI_ENDPOINT"),
             azure_deployment=model,
-            openai_api_version=API_VERSION,
+            api_version=API_VERSION,
             temperature=temperature,
         )
     elif source == "Anthropic":

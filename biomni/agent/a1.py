@@ -40,13 +40,13 @@ class AgentState(TypedDict):
 
 class A1:
     def __init__(
-        self,
-        path="./data",
-        llm="claude-sonnet-4-20250514",
-        use_tool_retriever=True,
-        timeout_seconds=600,
-        base_url: str | None = None,
-        api_key: str = "EMPTY",
+            self,
+            path="./data",
+            llm="claude-sonnet-4-20250514",
+            use_tool_retriever=True,
+            timeout_seconds=600,
+            base_url: str | None = None,
+            api_key: str = "EMPTY",
     ):
         """Initialize the biomni agent.
 
@@ -103,7 +103,8 @@ class A1:
         self.path = os.path.join(path, "biomni_data")
         module2api = read_module2api()
 
-        self.llm = get_llm(llm, stop_sequences=["</execute>", "</solution>"], base_url=base_url, api_key=api_key)
+        self.llm = get_llm(llm, source="AzureOpenAI", stop_sequences=["</execute>", "</solution>"], base_url=base_url,
+                           api_key=api_key)
         self.module2api = module2api
         self.use_tool_retriever = use_tool_retriever
 
@@ -528,15 +529,15 @@ class A1:
         return removed
 
     def _generate_system_prompt(
-        self,
-        tool_desc,
-        data_lake_content,
-        library_content_list,
-        self_critic=False,
-        is_retrieval=False,
-        custom_tools=None,
-        custom_data=None,
-        custom_software=None,
+            self,
+            tool_desc,
+            data_lake_content,
+            library_content_list,
+            self_critic=False,
+            is_retrieval=False,
+            custom_tools=None,
+            custom_data=None,
+            custom_software=None,
     ):
         """Generate the system prompt based on the provided resources.
 
@@ -625,7 +626,7 @@ class A1:
 
         # Format the default data lake content
         if isinstance(default_data_lake_content, list) and all(
-            isinstance(item, str) for item in default_data_lake_content
+                isinstance(item, str) for item in default_data_lake_content
         ):
             # Simple list of strings - check if they already have descriptions
             data_lake_formatted = []
@@ -653,12 +654,12 @@ class A1:
 
         # Format the default library content
         if isinstance(default_library_content_list, list) and all(
-            isinstance(item, str) for item in default_library_content_list
+                isinstance(item, str) for item in default_library_content_list
         ):
             if (
-                len(default_library_content_list) > 0
-                and isinstance(default_library_content_list[0], str)
-                and "," not in default_library_content_list[0]
+                    len(default_library_content_list) > 0
+                    and isinstance(default_library_content_list[0], str)
+                    and "," not in default_library_content_list[0]
             ):
                 # Simple list of strings
                 libraries_formatted = []
@@ -1028,18 +1029,18 @@ Each library is listed with its description to help you understand its functiona
 
                 # Check if the code is R code
                 if (
-                    code.strip().startswith("#!R")
-                    or code.strip().startswith("# R code")
-                    or code.strip().startswith("# R script")
+                        code.strip().startswith("#!R")
+                        or code.strip().startswith("# R code")
+                        or code.strip().startswith("# R script")
                 ):
                     # Remove the R marker and run as R code
                     r_code = re.sub(r"^#!R|^# R code|^# R script", "", code, 1).strip()  # noqa: B034
                     result = run_with_timeout(run_r_code, [r_code], timeout=timeout)
                 # Check if the code is a Bash script or CLI command
                 elif (
-                    code.strip().startswith("#!BASH")
-                    or code.strip().startswith("# Bash script")
-                    or code.strip().startswith("#!CLI")
+                        code.strip().startswith("#!BASH")
+                        or code.strip().startswith("# Bash script")
+                        or code.strip().startswith("#!CLI")
                 ):
                     # Handle both Bash scripts and CLI commands with the same function
                     if code.strip().startswith("#!CLI"):
@@ -1060,8 +1061,8 @@ Each library is listed with its description to help you understand its functiona
 
                 if len(result) > 10000:
                     result = (
-                        "The output is too long to be added to context. Here are the first 10K characters...\n"
-                        + result[:10000]
+                            "The output is too long to be added to context. Here are the first 10K characters...\n"
+                            + result[:10000]
                     )
                 observation = f"\n<observation>{result}</observation>"
                 state["messages"].append(AIMessage(content=observation.strip()))
@@ -1069,7 +1070,7 @@ Each library is listed with its description to help you understand its functiona
             return state
 
         def routing_function(
-            state: AgentState,
+                state: AgentState,
         ) -> Literal["execute", "generate", "end"]:
             next_step = state.get("next_step")
             if next_step == "execute":
@@ -1082,7 +1083,7 @@ Each library is listed with its description to help you understand its functiona
                 raise ValueError(f"Unexpected next_step: {next_step}")
 
         def routing_function_self_critic(
-            state: AgentState,
+                state: AgentState,
         ) -> Literal["generate", "end"]:
             next_step = state.get("next_step")
             if next_step == "generate":
