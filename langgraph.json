@@ -1,7 +1,7 @@
 {
   "dependencies": ["."],
   "graphs": {
-    "agent": "./demo-mcp.py:graph"
+    "agent": "./demo-mcp.py:app"
   },
   "env": ".env",
   "image_distro": "wolfi"
